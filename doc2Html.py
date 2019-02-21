@@ -49,12 +49,72 @@ def reST_to_html( s ):
     return core.publish_string( s, writer = html_fragment_writer )
 
 
+def scan_folder(path, handler):
+    import os
+    for f in os.listdir(path):
+        if os.path.isdir(path+os.sep+f):
+            handler.processDir(path+os.sep+f, f)
+        elif f.endswith(".txt"):
+            handler.processRst(path+os.sep+f, f)
+        else:
+            handler.processAsset(path+os.sep+f, f)
+
+def rst2html(source, dest):
+    with open(source, "r") as f:
+        data = f.read()
+        output = reST_to_html(data)
+        with open(dest, 'w') as target:
+            target.write(output)
+
+class doc_folder_processor:
+    def __init__(self, input, output, rstProcessor):
+        self.output = output
+        self.input = input
+        self.rstProcessor = rstProcessor
+
+    def inOutput(self, inputFilePath):
+        import os
+        rel = os.path.relpath(inputFilePath, self.input)
+        return self.output + os.sep + rel
+
+    def start(self):
+        import os
+        if not os.path.exists(self.output):
+            os.makedirs(self.output)
+        scan_folder(self.input, self)
+
+    def processDir(self, path, fname):
+        print "processing directory", path, "with name", fname
+
+        doc_folder_processor(path, self.inOutput(path), self.rstProcessor).start()
+
+    def processRst(self, path, fname):
+        print "found rst file:", fname
+        self.rstProcessor(path, self.inOutput(path).replace(".txt", ".html"))
+
+    def processAsset(self, path, fname):
+        print "found asset file", fname
+        target = self.inOutput(path)
+        import shutil
+        shutil.copy(path, target)
+
+
 if __name__ == "__main__":
+    # import sys
+    # source = sys.argv[1]
+    # result = sys.argv[2]
+    # with open (source, "r") as f:
+    #     data = f.read()
+    #     output = reST_to_html(data)
+    #     with open(result, 'w') as target:
+    #         target.write(output)
     import sys
     source = sys.argv[1]
     result = sys.argv[2]
-    with open (source, "r") as f:
-        data = f.read()
-        output = reST_to_html(data)
-        with open(result, 'w') as target:
-            target.write(output)
+
+    type = sys.argv[3]
+
+    if type == "html":
+        doc_folder_processor(source, result, rst2html).start()
+    else:
+        raise "Format "+type+" is not supported"

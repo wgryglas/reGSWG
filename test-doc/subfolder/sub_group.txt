@@ -1,0 +1,23 @@
+=========================================
+ReStructuredText (rst): plain text markup
+=========================================
+
+Math
+~~~~~
+sample of inline latex :math:`\Sigma=\frac{1}{2}\cdot\rho`
+
+sample of centered latex (note that blank lines after this line and after directive are required):
+
+.. math::
+
+ \Sigma=\frac{1}{2}\cdot\rho
+
+
+
+Show me some more stuff, please
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+We can also include figures:
+
+.. figure:: figures/test.png
+   :width: 500px
