@@ -5,8 +5,8 @@ from docutils import nodes
 # Import Directive base class.
 from docutils.parsers.rst import Directive
 
-class BaseAdmonition(Directive):
 
+class BaseAdmonition(Directive):
     required_arguments = 0
     optional_arguments = 0
     final_argument_whitespace = True
@@ -28,10 +28,12 @@ class BaseAdmonition(Directive):
         return [admonition_node]
 
 
+import docutils
 from docutils import core
 from docutils.writers.html4css1 import Writer, HTMLTranslator
 
-class HTMLFragmentTranslator( HTMLTranslator ):
+
+class HTMLFragmentTranslator(HTMLTranslator):
     def __init__(self, document):
         HTMLTranslator.__init__(self, document)
         self.head_prefix = ['', '', '', '', '']
@@ -42,35 +44,41 @@ class HTMLFragmentTranslator( HTMLTranslator ):
     def astext(self):
         return ''.join(self.body)
 
-html_fragment_writer = Writer()
-html_fragment_writer.translator_class = HTMLFragmentTranslator
-
-def reST_to_html( s ):
-    return core.publish_string( s, writer = html_fragment_writer )
-
 
 def scan_folder(path, handler):
     import os
     for f in os.listdir(path):
-        if os.path.isdir(path+os.sep+f):
-            handler.processDir(path+os.sep+f, f)
+        if os.path.isdir(path + os.sep + f):
+            handler.processDir(path + os.sep + f, f)
         elif f.endswith(".txt"):
-            handler.processRst(path+os.sep+f, f)
+            handler.processRst(path + os.sep + f, f)
         else:
-            handler.processAsset(path+os.sep+f, f)
+            handler.processAsset(path + os.sep + f, f)
 
-def rst2html(source, dest):
-    with open(source, "r") as f:
-        data = f.read()
-        output = reST_to_html(data)
-        with open(dest, 'w') as target:
-            target.write(output)
+
+class HtmlWriter:
+    def __init__(self):
+        self.outdata = None
+        self.html_fragment_writer = Writer()
+        self.html_fragment_writer.translator_class = HTMLFragmentTranslator
+
+    def set_rst_input(self, source):
+        with open(source, "r") as f:
+            data = f.read()
+            self.outdata = core.publish_string(data, writer=self.html_fragment_writer)
+
+    def write(self, dest):
+        with open(dest, 'w') as f:
+            f.write(self.outdata)
+
 
 class doc_folder_processor:
     def __init__(self, input, output, rstProcessor):
         self.output = output
         self.input = input
         self.rstProcessor = rstProcessor
+
+        self.prev_file = None
 
     def inOutput(self, inputFilePath):
         import os
@@ -84,16 +92,17 @@ class doc_folder_processor:
         scan_folder(self.input, self)
 
     def processDir(self, path, fname):
-        print "processing directory", path, "with name", fname
+        print("processing directory", path, "with name", fname)
 
         doc_folder_processor(path, self.inOutput(path), self.rstProcessor).start()
 
     def processRst(self, path, fname):
-        print "found rst file:", fname
-        self.rstProcessor(path, self.inOutput(path).replace(".txt", ".html"))
+        print("found rst file:", fname)
+        self.rstProcessor.set_rst_input(path)
+        self.rstProcessor.write(self.inOutput(path).replace(".txt", ".html"))
 
     def processAsset(self, path, fname):
-        print "found asset file", fname
+        print("found asset file", fname)
         target = self.inOutput(path)
         import shutil
         shutil.copy(path, target)
@@ -108,13 +117,15 @@ if __name__ == "__main__":
     #     output = reST_to_html(data)
     #     with open(result, 'w') as target:
     #         target.write(output)
+
     import sys
+
     source = sys.argv[1]
     result = sys.argv[2]
 
     type = sys.argv[3]
 
     if type == "html":
-        doc_folder_processor(source, result, rst2html).start()
+        doc_folder_processor(source, result, HtmlWriter()).start()
     else:
-        raise "Format "+type+" is not supported"
+        raise "Format " + type + " is not supported"
