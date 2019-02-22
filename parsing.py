@@ -1,5 +1,4 @@
 
-
 import docutils.frontend, docutils.parsers.rst, docutils.utils, docutils.nodes
 
 
@@ -23,7 +22,19 @@ parser = docutils.parsers.rst.Parser()
 parser.parse(fileobj.read(), document)
 
 
-class LinkCheckerVisitor(docutils.nodes.GenericNodeVisitor):
+docutils.nodes._add_node_class_names("contents")
+
+
+class CustomNodeVisitor(docutils.nodes.GenericNodeVisitor, object):
+    """
+    trick for converting non-new style classes to new style classes
+    required to allow access to super constructor
+    """
+    pass
+
+class LinkCheckerVisitor(CustomNodeVisitor):
+    def __init__(self, document):
+        super(LinkCheckerVisitor, self).__init__(document)
 
     def visit_reference(self, node):
         attributes = node.attlist()
@@ -33,6 +44,9 @@ class LinkCheckerVisitor(docutils.nodes.GenericNodeVisitor):
     def visit_contents(self, node):
         print "Contents", node
 
+    def visit_note(self, node):
+        print "note", node
+
     def visit_title(self, node):
         pass
         # print node.children[0]
@@ -40,6 +54,9 @@ class LinkCheckerVisitor(docutils.nodes.GenericNodeVisitor):
 
     def default_visit(self, node):
         # Pass all other nodes through.
+        pass
+
+    def default_departure(self, node):
         pass
 
 
