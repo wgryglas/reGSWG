@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+
+<body>
+
+<!-- Why such a template?
+  Most of the template generators are based on some technology for content replacement. It is much harder to define
+  a generic document with only HTML knowledge. The goal of this approach is to let use html experience to create some
+  general, exemplary document, filled with random content and then reuse it for generating similar pages filled with
+  content derived from human readable format - in our case it would be the reStructuredText format (*.rst files).
+
+  The HTML language separates data from the way of rendering it using the CSS style sheets. However in most cases it is
+  not sufficient separation of concern, as the data stored in html document is very hard to read and edit. What is more
+  it is also hard to reuse the data for different purposes. Therefor it is more suitable to keep pure data
+  (text, pictures, links) in separate, easy to read, format and then place this content in appropriate locations on the
+  website. We might come up with simple translator from rst to html, but it would enforce prescribed structure of the
+  document. Usually we need to be more flexible, it will be often required to redesign the page structure, while the
+  content data would remain the same.
+
+  The advantage of this approach is to have a template file that can be itself displayed in the web-browser improving
+  prototyping time. The regular css files would be applicable in the same way as it is with regular html page.
+
+  The content rst files might contain more content than it would be rendered, as the *.html template would decide what
+  to use. If the content would be missing some data required by the template the warning will be prompted and random
+  data will be placed as a placeholder.
+-->
+
+<!-- Conversion idea: RST -> XML -> HTML
+ The "docutils" python package serves tools for generating html from rst directly. It also let use use custom document
+ inspection for writing own generator. We might end up with having such a code that would convert rst to html using
+ docutils parser and describe here html template. However our data, written in the *.rst file would still be very hard
+ to process by other clients. Therefor I've decided to add intermediate step during conversion. The *.rst file will
+ be converted to generic XML file, containing document nodes with properties in the form of attributes and text/data
+ as a content of the node. The XML parsing is supported by most of languages popular libraries, therefor it won't be
+ problematic to process data further. On the other hand this does not apply to *.rst files, which have many parsers but
+ it is not as common as the XML files.
+ Finally, while having the content data in the XML format (files stored in directories representing parts of web page)
+ we will use the "html template" file for conversion between XML and HTML.
+-->
+
+
+<!-- General rules for the "HTML Template"
+ There are 2 types of html document elements. First is a regular document element, which will be converted "as is" with
+ injected extra content defined in rst files (the files storing pure data in a form of text and its declarative attributes).
+ The template html file might also include JS files to operate on the document the same way as simple web page.
+
+ The second type of element is the definition. The definition element will not be rendered where is placed, it is just
+ used for describing how to build html representation of the given document object. It can reference some properties
+ related to given object and place properties values into text (content) of html document node.
+ Note, if some some document object would not be defined inside html template the one from the parent directory
+ would be used or if none would be found the default built-in would be used.
+-->
+
+<!-- Document Object Properties
+
+-->
+
+<!-- Global Document Properties
+  A
+-->
+
+
+
+<!-- define
+ everything under "define" attribute will not be rendered directly. The defined html document node will be used for
+ building view of specified document object, here the "note" object. The put-start/put-end attribute informs to put as
+ node content specified property(which might also be composition of rendered other doc. objects) from the "note" object.
+ To know all the properties of object you need to look for some documentation of the "note" object.
+ Note, that put-start/end references local property name, valid for the "note" object that is being processed. To
+ reference a global, document wide property, use "global <property name>" syntax
+-->
+<div define="note" style="border:1px blue solid; padding:5px; border-radius:5px">
+    <a style="font-family:courier; color:white; background-color:blue; border-radius:3px; padding:3px; margin:2px">Note</a>
+    <div style="justify=flex-strech; align:flex">
+        <div put-start="content" style="font-family:droid">
+            <!-- ignore -->
+            <p>lorem impsum bla bla bla</p>
+            <p>lorem impsum bla bla bla</p>
+            <p>lorem impsum bla bla bla</p>
+            <!-- ignore -->
+        </div>
+        <div>
+            <div put-end="image" action="put-image"></div>
+            <p put-start="caption"></p>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!--<div content=""-->
+<!--<div style="align=flex">-->
+    <!--<div>-->
+        <!-- -->
+    <!--</div>-->
+<!--</div>-->
+
+
+</body>
+</html>

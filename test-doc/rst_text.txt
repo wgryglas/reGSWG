@@ -13,6 +13,10 @@ What is reStructuredText?
   notes text after indentation
   notes second indentation
 
+
+.. youtube:: https://youtu.be/3KiE8VTCyIw Video to some grate tutorial
+
+
 An easy-to-read, what-you-see-is-what-you-get plaintext markup syntax
 and parser system, abbreviated *rst*. In other words, using a simple
 text editor, documents can be created which
