@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>My Webpage</title>
+</head>
+<body>
+    <div id = "some">
+        {% for item in paragraphs %}
+            <a class="refTitle">{{loop.index}}.{{item.text}}</a>
+        {% endfor %}
+    </div>
+
+{#
+    <ul id="navigation">
+    {% for item in navigation %}
+        <li><a href="{{ item.href }}">{{ item.caption }}</a></li>
+    {% endfor %}
+    </ul>
+
+    <h1>My Webpage</h1>
+    {{ a_variable }}
+#}
+    {# a comment #}
+
+</body>
+</html>
