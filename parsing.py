@@ -2,6 +2,8 @@ import docutils.frontend, docutils.parsers.rst, docutils.utils, docutils.nodes
 
 from docutils.parsers.rst.directives import register_directive
 
+#load customization tools
+import directives, roles
 
 class File:
     def __init__(self, path):
@@ -15,36 +17,14 @@ class File:
             return data
 
 
-class youtube(docutils.nodes.TextElement): pass
-
-
-# def __init__(self, link, caption):
-#     self.link = link
-#     self.title = caption if caption else ""
-
-# docutils.parsers.rst.nodes._add_node_class_names(YoutubeNode)
-
-class YoutubeDirective(docutils.parsers.rst.Directive):
-    required_arguments = 1
-    optional_arguments = 100000
-    has_content = True
-
-    def run(self):
-        thenode = youtube(text=" ".join(self.arguments[1:]))
-        thenode.attributes['link'] = self.arguments[0]
-        return [thenode]
-
-
-register_directive("youtube", YoutubeDirective)
-
-fileobj = File("test-doc/rst_text.txt")
+fileobj = File("exampleDocument.rst")
 
 default_settings = docutils.frontend.OptionParser(components=(docutils.parsers.rst.Parser,)).get_default_values()
 document = docutils.utils.new_document(fileobj.name, default_settings)
 parser = docutils.parsers.rst.Parser()
 parser.parse(fileobj.read(), document)
 
-docutils.nodes._add_node_class_names("contents")
+#docutils.nodes._add_node_class_names("contents")
 
 
 class CustomNodeVisitor(docutils.nodes.GenericNodeVisitor, object):
@@ -77,7 +57,9 @@ class LinkCheckerVisitor(CustomNodeVisitor):
         for e in node.traverse():
             child.text = e.astext()
 
-    # def visit_paragraph(self, node):
+    def visit_paragraph(self, node):
+        print node
+
 
     def visit_youtube(self, node):
         child = XML.SubElement(self._current_node, "youtube", {"link": node.attributes['link']})
@@ -88,17 +70,37 @@ class LinkCheckerVisitor(CustomNodeVisitor):
         # print node.children[0]
         # docutils.nodes.title.
 
+    # def visit_paragraph(self, node):
+    #     print node
+    def visit_TextElement(self, node):
+        print node
+
+    # def visit_paragraph(self, node):
+    #     print node
+    #     self._current_node.text += node.astext()
+
     def default_visit(self, node):
         # Pass all other nodes through.
+        pass
+
+    def visit_vector(self, node):
+        pass
+
+    def visit_input(self, node):
         pass
 
     def default_departure(self, node):
         pass
 
 
-xmlVisitor = LinkCheckerVisitor(document)
-document.walk(xmlVisitor)
+# xmlVisitor = LinkCheckerVisitor(document)
+# document.walk(xmlVisitor)
+#
+# xmlDoc = xmlVisitor.xmlDocument
 
-xmlDoc = xmlVisitor.xmlDocument
+# print XML.tostring(xmlDoc).decode()
 
-print XML.tostring(xmlDoc).decode()
+dom = document.asdom()
+
+with open("test-doc/exampleDocument.xml", "w") as xmlFile:
+    dom.writexml(xmlFile, newl="\n", addindent="\t")

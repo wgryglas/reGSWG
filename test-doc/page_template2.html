@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+
+<body>
+
+<div define="note" style="border:1px blue solid; padding:5px; border-radius:5px">
+    <a style="font-family:courier; color:white; background-color:blue; border-radius:3px; padding:3px; margin:2px">Note</a>
+    <div style="justify=flex-strech; align:flex">
+        <div style="font-family:droid">
+            <!--ignore-->
+            <p>lorem impsum bla bla bla</p>
+            <p>lorem impsum bla bla bla</p>
+            <p>lorem impsum bla bla bla</p>
+            <!--ignore-->
+        </div>
+    </div>
+</div>
+
+
+<!--
+    ${element.content} would return formatted content of the processed node
+    ${element.<any_name>} would return node attribute value
+    ${element.children} would return a list of child nodes valid within processed node
+    Therefore you might define parent node and use directly its children values/attributes, or just define
+    generic parent node while rendering children basing on its defined renderers, look below:
+-->
+<div define="vector" style="display:flex; align-items:center">
+    This is a vector input [${element.children[0].content}, ${element.children[1].content}, ${element.children[2].content}]
+</div>
+<!-- or -->
+<div define="vector" style="display:flex; align-items:center">
+    This is a vector input ${element.content}
+    <span define="input" style="border:1px solid darkgray; border-radius:3px; padding:2px">
+        ${element.content} <!--here element is in the "input" scope, so it's actually input node-->
+    </span>
+</div>
+<!-- or define separately both nodes-->
+<span define="vector.input" style="border:1px solid darkgray; border-radius:3px; padding:2px">
+    ${element.content}
+</span>
+<div define="vector" style="display:flex; align-items:center">
+    <span>Vector input: </span>
+    ${element.content}
+    <button onclick="navigator.clipboard.writeText('(${children[0].content}, ${children[1].content}, ${children[2].content})');">Copy</button>
+</div>
+
+
+<!--
+    ${document.xyz} - retrieve xyz global per document property
+-->
+<h1>
+    <p>${document.title}</p>
+    <p>${document.subtitles[2]}</p>
+</h1>
+
+<h2>${document.subtitles[0]}</h2>
+<h2>${document.subtitles[1]}</h2>
+<h2>${document.subtitles[2]}</h2>
+
+<!--
+    you might also reference global per website properties by using "website" variable, e.g: this code
+    ${len(website.documents)}
+    would return number of documents under processed project
+-->
+<p>
+    On this website you can visit ${len(website.documents)} pages!
+</p>
+
+
+<!--
+    as ${***} is just regular python code you might also use it to control visibility of specific elements by
+    exploiting the "when" attribute under html node:
+-->
+<span when="${document.prev!=None and document.next!=None}" style="display:flex; justify-content:space-between">
+    <a when="${document.prev!=None}" href="${document.previous.address}"> Prev</a>
+    <a when="${document.next!=None}" href="${document.next.address}"> Next </a>
+</span>
+
+
+</body>
+</html>
