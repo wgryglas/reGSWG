@@ -2,19 +2,14 @@ import docutils.frontend, docutils.parsers.rst, docutils.utils, docutils.nodes
 from docutils.parsers.rst.directives import register_directive
 
 
-class youtube(docutils.nodes.TextElement):
-    pass
-
-
 class YoutubeDirective(docutils.parsers.rst.Directive):
     required_arguments = 1
     optional_arguments = 100000
     has_content = True
 
     def run(self):
-        thenode = youtube(text=" ".join(self.arguments[1:]))
-        thenode.attributes['link'] = self.arguments[0]
-        return [thenode]
+        from nodes import youtube
+        return [youtube(link=self.arguments[0], title=" ".join(self.arguments[1:]), description = self.content)]
 
 
 register_directive("youtube", YoutubeDirective)

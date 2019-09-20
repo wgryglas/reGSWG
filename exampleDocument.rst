@@ -7,7 +7,8 @@ Some text,
 
 .. This is the comment. The "lorem" inline directive will print 20 words from lorem ipsum
 
-.. youtube:: some body
+.. youtube:: https://youtu.be/3KiE8VTCyIw Great Tutorial
+    Here goes some
 
 This is inline lorem generation :lorem:`5` adssa asdsa
 

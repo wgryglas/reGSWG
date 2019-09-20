@@ -1,9 +1,12 @@
 
-{% block vector%}
-<div>
-    <span>{{ content.x }}</span>
-    <span>{{ content.y }}</span>
-    <span>{{ content.z }}</span>
+
+<span define="input"> {{content.text}} </span>
+
+<span define="vector.input"> {{content.text}} </span>
+
+<div define="vector">
+    {{content.x}}
+    {{content.y}}
+    {{content.z}}
     <button>Copy</button>
 </div>
-{%endblock%}
