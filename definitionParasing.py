@@ -1,3 +1,4 @@
+import re
 
 
 class CustomRenderingTemplate:
@@ -9,40 +10,49 @@ class CustomRenderingTemplate:
         return self.template.render(**kwargs)
 
 
-import re
-nasted_node_pattern = re.compile(r'(.+\..+)+')
+nested_node_pattern = re.compile(r'(.+\..+)+')
 
 
 class AccessBranch:
+    # def __init__(self):
     children = dict()
 
     def append(self, name, template):
-        if nasted_node_pattern.match(name):
+        if nested_node_pattern.match(name):
             names = name.split('.')
             first = names[0]
             rest = '.'.join(names[1:])
             if first in self.children:
                 self.children[first].append(rest, template)
-            curr = self.children
-            for i, subname in enumerate(names):
-                last = i < len(names) - 1
-                if subname in curr and not last:
-                    subname
+            else:
+                branch = AccessBranch()
+                self.children[first] = branch
+                branch.append(rest, template)
 
+        elif name in self.children and isinstance(self.children[name], AccessBranch):
+            node = AccessNode(name, template)
+            node.children = self.children[name].children
+            self.children[name] = node
 
         else:
-            self.children[name] = template
+            self.children[name] = AccessNode(name, template)
 
-class AcessNode:
+
+class AccessNode(AccessBranch):
     def __init__(self, name, node_template):
         self.name = name
         self.node_template = node_template
-        self.children = dict()
 
+    def __str__(self):
+        s = "{}::\n".format(self.name)
+        for c in self.children:
+            s += "{}::{}\n".format(c, self.children[c])
+        return s + "{}::{}".format(self.name, self.node_template.__str__())
 
 
 class AccessTree(AccessBranch):
     pass
+
 
 def load_definition(html_file_path):
     from BeautifulSoup import BeautifulSoup
@@ -67,9 +77,10 @@ def load_definition(html_file_path):
 
         target = a['define']
 
-        print d
+        templates.append(target, d)
 
-
+    for t in templates.children:
+        print templates.children[t]
 
 
 if __name__ == "__main__":
