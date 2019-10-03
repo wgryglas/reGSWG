@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../pelicanReDoc/.idea/pelicanReDoc.iml" filepath="$PROJECT_DIR$/../pelicanReDoc/.idea/pelicanReDoc.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/reDoc.iml" filepath="$PROJECT_DIR$/.idea/reDoc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../reDocsEditor/.idea/reDocsEditor.iml" filepath="$PROJECT_DIR$/../reDocsEditor/.idea/reDocsEditor.iml" />
     </modules>
   </component>
 </project>

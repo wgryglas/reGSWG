@@ -1,6 +1,6 @@
-import docutils.frontend, docutils.parsers.rst, docutils.utils, docutils.nodes
+import docutils_customization.frontend, docutils_customization.parsers.rst, docutils_customization.utils, docutils_customization.nodes
 
-from docutils.parsers.rst.directives import register_directive
+from docutils_customization.parsers.rst.directives import register_directive
 
 #load customization tools
 import directives, roles
@@ -19,15 +19,15 @@ class File:
 
 fileobj = File("exampleDocument.rst")
 
-default_settings = docutils.frontend.OptionParser(components=(docutils.parsers.rst.Parser,)).get_default_values()
-document = docutils.utils.new_document(fileobj.name, default_settings)
-parser = docutils.parsers.rst.Parser()
+default_settings = docutils_customization.frontend.OptionParser(components=(docutils_customization.parsers.rst.Parser,)).get_default_values()
+document = docutils_customization.utils.new_document(fileobj.name, default_settings)
+parser = docutils_customization.parsers.rst.Parser()
 parser.parse(fileobj.read(), document)
 
 #docutils.nodes._add_node_class_names("contents")
 
 
-class CustomNodeVisitor(docutils.nodes.GenericNodeVisitor, object):
+class CustomNodeVisitor(docutils_customization.nodes.GenericNodeVisitor, object):
     """
     trick for converting non-new style classes to new style classes
     required to allow access to super constructor

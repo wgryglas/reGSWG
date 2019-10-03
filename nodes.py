@@ -1,4 +1,4 @@
-import docutils.nodes as nodes
+import docutils_customization.nodes as nodes
 
 
 class input(nodes.Inline, nodes.Element):
@@ -15,7 +15,7 @@ class vector(nodes.Inline, nodes.Element):
 
 class youtube(nodes.Inline, nodes.Element):
     def __init__(self, link, title, description='', rawsource='', *children, **attributes):
-        from docutils.nodes import TextElement
+        from docutils_customization.nodes import TextElement
         nodes.Element.__init__(self, rawsource)
         self.attributes['link'] = link
         self.attributes['title'] = title

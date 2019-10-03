@@ -1,8 +1,8 @@
-from docutils.parsers.rst import roles
+from docutils_customization.parsers.rst import roles
 
 
 def lorem_text_role(name, rawtext, text, lineno, inliner, options={}, content=[]):
-    from docutils.nodes import Text
+    from docutils_customization.nodes import Text
     from loremGeneration import random_words_as_string
     return [Text(random_words_as_string(int(text)))], []
 

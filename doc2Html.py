@@ -1,9 +1,9 @@
 #! /usr/bin/python
 
 # Import Docutils document tree nodes module.
-from docutils import nodes
+from docutils_customization import nodes
 # Import Directive base class.
-from docutils.parsers.rst import Directive
+from docutils_customization.parsers.rst import Directive
 
 
 class BaseAdmonition(Directive):
@@ -28,9 +28,9 @@ class BaseAdmonition(Directive):
         return [admonition_node]
 
 
-import docutils
-from docutils import core
-from docutils.writers.html4css1 import Writer, HTMLTranslator
+import docutils_customization
+from docutils_customization import core
+from docutils_customization.writers.html4css1 import Writer, HTMLTranslator
 
 
 class HTMLFragmentTranslator(HTMLTranslator):

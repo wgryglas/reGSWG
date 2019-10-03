@@ -1,8 +1,8 @@
-import docutils.frontend, docutils.parsers.rst, docutils.utils, docutils.nodes
-from docutils.parsers.rst.directives import register_directive
+import docutils_customization.frontend, docutils_customization.parsers.rst, docutils_customization.utils, docutils_customization.nodes
+from docutils_customization.parsers.rst.directives import register_directive
 
 
-class YoutubeDirective(docutils.parsers.rst.Directive):
+class YoutubeDirective(docutils_customization.parsers.rst.Directive):
     required_arguments = 1
     optional_arguments = 100000
     has_content = True
@@ -17,13 +17,13 @@ register_directive("youtube", YoutubeDirective)
 
 # class loremipsum
 
-class LoremIpsumDirective(docutils.parsers.rst.Directive):
+class LoremIpsumDirective(docutils_customization.parsers.rst.Directive):
     required_arguments = 2
     optional_arguments = 0
     has_content = True
 
     def run(self):
-        from docutils.nodes import TextElement, paragraph
+        from docutils_customization.nodes import TextElement, paragraph
         amount = int(self.arguments[0])
         if self.arguments[1] == "words":
             from loremGeneration import random_words_as_string
